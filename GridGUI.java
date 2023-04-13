@@ -15,10 +15,10 @@ public class GridGUI extends JFrame {
         setSize(400, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.grid = grid;
-//        add(new GridPanel());
-//        setVisible(true);
-        add(new GridQ());
+        add(new GridPanel());
         setVisible(true);
+//        add(new GridQ());
+//        setVisible(true);
     }
 
 

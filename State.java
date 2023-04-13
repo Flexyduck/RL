@@ -6,7 +6,9 @@ public class State {
     private double currVal;
     private int[] possibleActions;
     private int actionTaken;
-    private double oldVal;
+
+
+    public boolean isTerminal;
     private double north, south, east, west;
 
 
@@ -15,10 +17,9 @@ public class State {
         this.h = h;
         this.v = v;
         currVal = 0.0;
-        oldVal = 0.0;
         possibleActions = new int[3];
         actionTaken = 0;
-        //isTerminal = false;
+        isTerminal = false;
     }
     public State(int h, int v, double currVal) {
         this.h = h;
@@ -64,6 +65,14 @@ public class State {
         return h;
     }
 
+
+    public boolean isTerminal() {
+        return isTerminal;
+    }
+
+    public void setTerminal(boolean terminal) {
+        isTerminal = terminal;
+    }
     public int getActionTaken() {
         return actionTaken;
     }
@@ -78,22 +87,22 @@ public class State {
         return currVal;
     }
     public void setCurrVal(double currVal) {
-        this.oldVal = this.currVal;
         this.currVal = currVal;
     }
 
-//    public int findHighestAdjacentValue() {
-//        double [] qValues = {east, north, west, south};
-//        double max = 0.0;
-//        int direction = 0;
-//        for (int i = 0; i < qValues.length; i++) {
-//            if(qValues[i] > max){
-//                max = qValues[i];
-//                direction = i+1;
-//            }
-//        }
-//        return direction;
-//    }
+
+public void setMaxQ()
+{
+    double max = getEast();
+    if( max < getNorth())
+        max = getNorth();
+    else if( max < getWest())
+        max = getWest();
+    else if (max < getSouth())
+        max = getSouth();
+
+    setCurrVal(max);
+}
 
     @Override
     public String toString() {
