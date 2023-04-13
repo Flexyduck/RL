@@ -27,7 +27,6 @@ public class ValueIterationAgent {
         newGrid.printGrid();
        iterateOver(newGrid, K);
        createOptimalPolicy(newGrid);
-
        GridGUI dis = new GridGUI(newGrid);
     }
 

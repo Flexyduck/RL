@@ -1,20 +1,29 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static java.lang.String.valueOf;
+
 public class QLearning {
 
-    private double tc ;
+    private static  double transitionCost ;
     private double[][] qValues;
     private State[][] state;
-    private final double alpha;
-    private double gamma;
+    private static  double alpha;
+    private static  double gamma;
     private int[][] rewards;
     private boolean[][] terminalStates;
     private Random rand;
-    int ROWS = 3;
-    int COLS = 4;
+    private static int ROWS;
+    private static int COLS;
     private int prevAction;
+
+    private static int episodes;
+
+    private static int startX,startY;
 
 
     public double[][] getqValues() {
@@ -28,25 +37,37 @@ public class QLearning {
             }
         }
     }
-    public static void main(String[] args) {
-        QLearning q = new QLearning(3,4,0.1,0.9,-0.1);
+    public static void main(String[] args) throws IOException{
+        readFile("gridConf.txt");
+        QLearning q = new QLearning(ROWS,COLS,alpha,gamma,transitionCost);
         q.initialize();
-//        q.setReward(2,3,1);
-//        q.setReward(1,3,-1);
-//        q.setTerminalState(2,3,true);
-//        q.setTerminalState(1,3,true);
-//
-//        q.addTerminal(2,3,1);
-//        q.addTerminal(1,3,-1);
 
-        q.addTerminal(2,3,1);
-        q.addTerminal(1,3,-1);
-        q.addTerminal(1,1,Double.NEGATIVE_INFINITY);
-        q.train(3500,0,0);
-
+        q.addTerminal(1,3,10);
+        q.addTerminal(1,4,-10);
+        q.addTerminal(0,2,-10);
+        q.addTerminal(1,2,Double.NEGATIVE_INFINITY);
+        q.addTerminal(4,4,Double.NEGATIVE_INFINITY);
+        q.train(episodes,startX,startY);
         QLearningGUI display = new QLearningGUI(q);
 
     }
+
+
+
+
+    public  int getCOLS() {
+        return COLS;
+    }
+
+    public  int getEpisodes() {
+        return episodes;
+    }
+
+    public  int getROWS() {
+        return ROWS;
+    }
+
+
 
     public void print( )
     {
@@ -66,7 +87,7 @@ public class QLearning {
     public QLearning(int rows, int cols, double learningRate, double discountFactor, double transitionCost) {
         this.alpha = learningRate;
         this.gamma = discountFactor;
-        tc = transitionCost;
+        this.transitionCost = transitionCost;
         this.rand = new Random();
         state = new State[rows][cols];
 
@@ -79,13 +100,6 @@ public class QLearning {
         state[row][col] = newState;
 
 
-    }
-    public void setReward(int row, int col, int reward) {
-        rewards[row][col] = reward;
-    }
-
-    public void setTerminalState(int row, int col, boolean isTerminal) {
-        terminalStates[row][col] = isTerminal;
     }
 
     public void train(int episodes,int row, int col) {
@@ -208,18 +222,13 @@ public class QLearning {
         } else if (x == 2 && y == 3) {
             return 1; // positive reward for exit +1
         } else {
-            return 0; // no reward for all other states
+            return transitionCost; // no reward for all other states
         }
     }
 
     public int getAction()
     {
-        int result = rand.nextInt(4)+1;
-//        while(result== prevAction)
-//        {
-//            result= rand.nextInt(4)+1;
-//        }
-        return result;
+        return rand.nextInt(4)+1;
     }
 
 
@@ -232,4 +241,145 @@ public class QLearning {
 
         return maxVal;
     }
+
+
+    public static void readFile(String filePath) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(filePath));
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            processLine(line);
+        }
+
+        reader.close();
+    }
+    public static void processLine(String line){
+
+        if(line.charAt(0) == 'H'){
+            COLS = (int)extractNumber(line);;  ;
+        }
+        else if(line.charAt(0) == 'T'){
+            if(line.charAt(1) == 'r'){
+                transitionCost =extractNumber(line);; ;
+            } else if (line.charAt(1) == 'e') {
+                 //createExitStates(processTerminal(line));
+            }
+
+        }
+        else if(line.charAt(0) == 'V'){
+            ROWS = (int)extractNumber(line);;  ;
+        }
+        else if(line.charAt(0) == 'B'){
+
+        }
+        else if(line.charAt(0) == 'R'){
+          processStart(line);
+
+        }
+        else if(line.charAt(0) == 'K'){
+
+        }
+        else if(line.charAt(0) == 'E'){
+            episodes  = (int) extractNumber(line);;  ;
+        }
+        else if(line.charAt(0) == 'D'){
+            gamma = extractNumber(line);;  ;
+        }
+
+        else if(line.charAt(0) == 'a'){
+            alpha  = extractNumber(line);;  ;
+        }
+    }
+    public static int loopTillEquals(String s){
+        int equalsPos = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if(s.charAt(i) == '='){
+                equalsPos = i;
+                break;
+            }
+        }
+        return equalsPos;
+    }
+    public static ArrayList<String> processBoulder(String s){
+        int newStart = loopTillEquals(s)+2;
+        ArrayList<String> idk = new ArrayList<>();
+        int commaCounter = 0;
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < (s.length()-newStart-1); i++) {
+            if(s.charAt(newStart+i) == ','){
+                commaCounter++;
+            }
+            if(commaCounter != 2) {
+                stringBuilder.append(s.charAt(newStart + i));
+            }
+            else{
+                idk.add(valueOf(stringBuilder));
+                stringBuilder = new StringBuilder();
+                commaCounter = 0;
+            }
+            if(i == (s.length()-newStart-2)){
+                idk.add(valueOf(stringBuilder));
+            }
+        }
+        return idk;
+    }
+    public static void processStart(String s){
+        int newStart = loopTillEquals(s)+2;
+        int[] startStates = new int[2];
+        int counter = 0;
+        for (int i = newStart; i < s.length(); i++) {
+            if(Character.isDigit(s.charAt(i))){
+                startStates[counter] = Character.getNumericValue(s.charAt(i));
+                counter++;
+            }
+        }
+
+        startX = startStates[0];
+        startY = startStates[1];
+
+    }
+    public static ArrayList<int[]> processCoordinates(ArrayList<String> coordList){
+        ArrayList<int[]> idk = new ArrayList<>();
+        for (String cList : coordList) {
+            int newStart = loopTillEquals(cList) + 1;
+            int [] coordinates = new int[2];
+            int checker = 0;
+            for (int j = newStart; j <= (cList.length() - newStart); j++) {
+                if (Character.isDigit(cList.charAt(j))) {
+                    coordinates[checker] = Character.getNumericValue(cList.charAt(j));
+                    checker++;
+                }
+            }
+            idk.add(coordinates);
+        }
+        return idk;
+    }
+    public static double extractNumber(String str) {
+        String[] parts = str.split("=");
+        String numberStr = parts[1].trim();
+        return Double.parseDouble(numberStr);
+    }
+    public void processTerminal(String sentence) {
+        int newStart = loopTillEquals(sentence)+1;
+        sentence = sentence.substring(newStart+1);
+        ArrayList<int[]> hm = new ArrayList<>();
+        for(int i = 0; i< sentence.length(); i++){
+            if(sentence.charAt(i)== '{'){
+                int [] who = new int[3];
+                i++;
+                String newSent = sentence.substring(sentence.indexOf('{')+1,sentence.indexOf('}'));
+                String [] toBeParsed = newSent.split(",");
+                for (int j = 0; j < who.length; j++) {
+                    who[j] = Integer.parseInt(toBeParsed[j]);
+                }
+                sentence =sentence.substring(sentence.indexOf('}')+1);
+                i = 0;
+                hm.add(who);
+            }
+        }
+
+    }
+
+
+
 }

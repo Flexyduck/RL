@@ -9,7 +9,7 @@ public class QLearningGUI extends JFrame{
 
     public QLearningGUI( QLearning qLearning)
     {
-        setTitle("Grid Drawing");
+        setTitle("Q Learning with Episodes");
         setSize(400, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.qLearning = qLearning;
@@ -26,9 +26,9 @@ public class QLearningGUI extends JFrame{
             g.setColor(Color.BLACK);
             g.fillRect(0, 0, getWidth(), getHeight());
 
-            int rows = 3;
-            int cols = 4;
-            double rewardValue = 1;
+            int rows = qLearning.getROWS();
+            int cols = qLearning.getCOLS();
+
 
             int width = getWidth();
             int height = getHeight()- getHeight()/4;
@@ -87,8 +87,8 @@ public class QLearningGUI extends JFrame{
             FontMetrics fm = g.getFontMetrics();
             int textWidth = fm.stringWidth(text);
             int textHeight = fm.getHeight();
-            int textX = x + (width / cols - textWidth) / 2;
-            int textY = y + (height / rows + textHeight) / 2;
+            int textX = x + ((width / cols) - textWidth) / 2;
+            int textY = y + ((height / rows )+ textHeight) / 2;
 
             g.drawString(text, textX, textY);
         }
@@ -101,7 +101,7 @@ public class QLearningGUI extends JFrame{
         FontMetrics fm = g.getFontMetrics();
         int textWidth = fm.stringWidth(text);
         int textHeight = fm.getHeight();
-        int textX = x + (width / cols      - textWidth) / 2;
+        int textX = x + ((width / cols) - 2) / 2;
         int textY = y + textHeight ;
 
         g.drawString(text, textX, textY);
@@ -115,7 +115,7 @@ public class QLearningGUI extends JFrame{
         textWidth = fm.stringWidth(text);
         textX  = x + (width/ cols) - textWidth;
         textY = y + (height /rows)/2 ;
-        g.drawString(text, textX-5, textY);
+        g.drawString(text, textX-2, textY);
 
 
         //south
@@ -126,7 +126,7 @@ public class QLearningGUI extends JFrame{
         fm = g.getFontMetrics();
         textWidth = fm.stringWidth(text);
         textX = x + (width / cols - textWidth) / 2;
-        textY = y + (height/rows - 5) ;
+        textY = y + (height/rows - 2) ;
         g.drawString(text, textX, textY);
         //east
         text = String.format("%.2f", qLearning.getGrid()[i][j].getEast()) ;
@@ -136,7 +136,7 @@ public class QLearningGUI extends JFrame{
 
         textX  = x ;
         textY = y+ (height / rows) / 2;
-        g.drawString(text, textX+5, textY);
+        g.drawString(text, textX+2, textY);
 
 
 

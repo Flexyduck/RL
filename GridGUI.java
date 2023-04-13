@@ -11,12 +11,14 @@ public class GridGUI extends JFrame {
 
 
     public GridGUI(Grid grid){
-        setTitle("Grid Drawing");
+        setTitle("Value Iteration Program");
         setSize(400, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.grid = grid;
         add(new GridPanel());
         setVisible(true);
+
+        //this prints the q values
 //        add(new GridQ());
 //        setVisible(true);
     }
