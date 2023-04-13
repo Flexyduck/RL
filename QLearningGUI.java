@@ -10,7 +10,7 @@ public class QLearningGUI extends JFrame{
     public QLearningGUI( QLearning qLearning)
     {
         setTitle("Q Learning with Episodes");
-        setSize(400, 400);
+        setSize(500, 500);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.qLearning = qLearning;
         add(new GridQ());
@@ -75,8 +75,8 @@ public class QLearningGUI extends JFrame{
         g.setColor(Color.white);
         g.setFont(new Font("Arial", Font.BOLD, 10));
 
-        int rows = 3;
-        int cols = 4;
+        int rows = qLearning.getROWS();
+        int cols = qLearning.getCOLS();
 
         if(qLearning.getGrid()[i][j].isTerminal)
         {
@@ -101,7 +101,7 @@ public class QLearningGUI extends JFrame{
         FontMetrics fm = g.getFontMetrics();
         int textWidth = fm.stringWidth(text);
         int textHeight = fm.getHeight();
-        int textX = x + ((width / cols) - 2) / 2;
+        int textX = x + ((width / cols) ) / 2;
         int textY = y + textHeight ;
 
         g.drawString(text, textX, textY);
