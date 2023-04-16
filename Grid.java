@@ -210,8 +210,6 @@ public class Grid {
         double max = Double.MIN_VALUE;
         int result = -1;
 
-
-
         // Check north
         if (row > 0 && grid[row-1][col].getCurrVal() > max) {
             max = grid[row-1][col].getCurrVal();
@@ -239,6 +237,20 @@ public class Grid {
 
 
         return result;
+    }
+    public int findDirectionToGo(int row, int col) {
+        double max = Double.MIN_VALUE;
+        State checkState = getState(row,col);
+        int bestWayToGo = 0;
+
+        double [] values = {getEast(checkState), getNorth(checkState), getWest(checkState), getSouth(checkState)};
+        for (int i = 0; i < values.length; i++) {
+            if(values[i] > max){
+                max = values[i];
+                bestWayToGo = i+1;
+            }
+        }
+        return bestWayToGo;
     }
     public State getState(int row, int col) {
         return grid[row][col];

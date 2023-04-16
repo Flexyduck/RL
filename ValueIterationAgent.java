@@ -1,16 +1,15 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 
 import static java.lang.String.valueOf;
 
 public class ValueIterationAgent {
-    static int horizontal;
-    static int vertical;
-    static int K;
+    static int horizontal,vertical,K;
+
     static int Episodes;
     static double Discount;
+
     static double alpha;
     static double Noise;
     static double TransitionCost;
@@ -18,32 +17,33 @@ public class ValueIterationAgent {
     static ArrayList<Boulder> Boulders = new ArrayList<>();
     static int[] RobotStartState = new int[2];
 
-
-
-
-    public static void main(String[] args) throws IOException {
-        readFile("gridConf.txt");
-        Grid newGrid = createGrid();
-        newGrid.printGrid();
-       iterateOver(newGrid, K);
-       createOptimalPolicy(newGrid);
-       ValueIterGUI dis = new ValueIterGUI(newGrid);
+    public ValueIterationAgent(String fileName){
+        readFile(fileName);
     }
 
-    public static void iterateOver(Grid grid, int k){
+//    public static void main(String[] args) {
+//        readFile("gridConf.txt");
+//        Grid newGrid = createGrid();
+//        newGrid.printGrid();
+//       iterateOver(newGrid, K);
+//       createOptimalPolicy(newGrid);
+//       ValueIterGUI dis = new ValueIterGUI(newGrid);
+//    }
+
+    public void iterateOver(Grid grid){
         ArrayList<State> newState = new ArrayList<>();
         int [] actions = {1,2,3,4};
         double [] qValues = new double[4];
         double [] values;
         int count = 0;
-        System.out.println("\nk = " + count);
-        grid.printGrid();
-        while (count != k) {
+        //System.out.println("\nk = " + count);
+        //grid.printGrid();
+        while (count != K) {
             if(count == 0){
                 setGridTerminals(grid);
                 count++;
-                System.out.println("\nk = " + count);
-                grid.printGrid();
+                //System.out.println("\nk = " + count);
+                //grid.printGrid();
                 continue;
             }
             for (int i = 0; i < grid.getRow(); i++) {
@@ -69,8 +69,8 @@ public class ValueIterationAgent {
             }
             count++;
             updateGrid(newState, grid);
-            System.out.println("\nk = " + count);
-            grid.printGrid();
+            //System.out.println("\nk = " + count);
+            //grid.printGrid();
         }
     }
     public static void updateGrid(ArrayList<State> nothing, Grid grid){
@@ -83,7 +83,7 @@ public class ValueIterationAgent {
         double goodProb = 1-Noise;
         return (goodProb*(TransitionCost + (Discount*pos1)) + badProbAlt*(TransitionCost + (Discount*pos2)) + badProbAlt*(TransitionCost + (Discount*pos3)));
     }
-    public static ArrayList<State> createOptimalPolicy(Grid grid){
+    public void createOptimalPolicy(Grid grid){
         ArrayList<State> optimalPolicy = new ArrayList<>();
         State robot = grid.getState(RobotStartState[0], RobotStartState[1]);
         optimalPolicy.add(robot);
@@ -92,13 +92,12 @@ public class ValueIterationAgent {
             optimalPolicy.add(robot);
         }
         for (int i = 0; i < optimalPolicy.size(); i++) {
-            if (i < optimalPolicy.size()) {
-                System.out.print(optimalPolicy.get(i) + "->");
-            } else if (i < optimalPolicy.size()) {
+             if (i == optimalPolicy.size()-1) {
                 System.out.print(optimalPolicy.get(i));
+                break;
             }
+                System.out.print(optimalPolicy.get(i) + "->");
         }
-        return optimalPolicy;
     }
     public static double returnMax(double[] arr){
         double maxVal = 0.0;
@@ -107,8 +106,7 @@ public class ValueIterationAgent {
         }
         return maxVal;
     }
-
-    public static Grid createGrid(){
+    public Grid createGrid(){
         Grid newGrid = new Grid(vertical, horizontal);
         newGrid.initialize();
         for (State boulder : Boulders) {
@@ -158,18 +156,21 @@ public class ValueIterationAgent {
         }
         return boulders;
     }
-    public static void readFile(String filePath) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(filePath));
-        String line;
+    public  void readFile(String filePath){
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+            String line;
 
-        while ((line = reader.readLine()) != null) {
-            processLine(line);
+            while ((line = reader.readLine()) != null) {
+                processLine(line);
+            }
+
+            reader.close();
+        } catch(Exception e) {
+            e.getStackTrace();
         }
-
-        reader.close();
     }
     public static void processLine(String line){
-
         if(line.charAt(0) == 'H'){
             horizontal = (int)extractNumber(line);;  ;
         }
@@ -295,7 +296,30 @@ public class ValueIterationAgent {
         }
         return hm;
     }
-
-
-
+    public double returnStateValue(int h, int v, int k){
+        Grid newGrid2 = createGrid();
+        K = k;
+        iterateOver(newGrid2);
+        return newGrid2.getState(h,v).getCurrVal();
+    }
+    public String returnBestPolicy(int h, int v, int k){
+        Grid newGrid2 = createGrid();
+        String directionToGo = "";
+        K = k;
+        iterateOver(newGrid2);
+        int bestAction = newGrid2.findDirectionToGo(h,v);
+        if (bestAction == 1){
+            directionToGo = "Go East";
+        }
+        else if (bestAction == 2){
+            directionToGo = "Go North";
+        }
+        else if (bestAction == 3){
+            directionToGo = "Go West";
+        }
+        else if (bestAction == 4){
+            directionToGo = "Go South";
+        }
+        return directionToGo;
+    }
 }

@@ -35,29 +35,20 @@ public class QLearning {
         Grid newGrid = createGrid();
         newGrid.printGrid();
         QLearning q = new QLearning();
-        q.train(3500,0,0,newGrid);
+        q.train(0,0,newGrid);
        QLearningGUI display = new QLearningGUI(newGrid);
 
     }
-
-
-
-
-
-
-    public  void train(int episodes,int row, int col, Grid grid) {
-
+    public void train(int row, int col, Grid grid) {
         setGridTerminals(grid);
         grid.printGrid();
-        for (int i = 0; i < episodes; i++) {
+        for (int i = 0; i < Episodes; i++) {
             System.out.println("Episode: "+i);
             trainEpisode(row, col,grid);
-
            grid.printGrid();
         }
     }
-
-    public int[] getNextState(int row, int col, int action,Grid grid) {
+    public int[] getNextState(int row, int col, int action, Grid grid) {
         // Get the next state (row, col) given the current state and action
         int newRow = row, newCol = col;
         switch (action) {
@@ -76,9 +67,7 @@ public class QLearning {
         }
         return new int[] {newRow, newCol};
     }
-
-    public int[] getNextValidCell(int row, int col, Grid grid)
-    {
+    public int[] getNextValidCell(int row, int col, Grid grid) {
         int newRow = row;
         int newCol = col;
 
@@ -116,16 +105,13 @@ public class QLearning {
 
         return new int[]{newRow,newCol};
     }
-
-    private void trainEpisode(int startRow, int startCol, Grid grid)
-    {
+    private void trainEpisode(int startRow, int startCol, Grid grid) {
         int currentRow = startRow;
         int currentCol = startCol;
-        int[] newState = new int[2];
-        double sample = 0;
-        double result = 0;
+        int[] newState;
+        double sample ;
+        double result ;
 
-//
         while(!grid.isTerminal(currentRow,currentCol)) {
             for (int i = 0; i < 4; i++) {
                 newState = getNextState(currentRow,currentCol,i+1,grid);
@@ -141,10 +127,7 @@ public class QLearning {
             currentCol = newState[1];
 
         }
-
-
     }
-
 
 
     public static Grid createGrid(){
