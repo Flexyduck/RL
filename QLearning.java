@@ -6,7 +6,7 @@ import static java.lang.String.valueOf;
 
 public class QLearning {
 
-    //instanc variables
+    //instance variables
     private static  double TransitionCost ;
     static ArrayList<ExitState> Terminals = new ArrayList<>();
     static ArrayList<Boulder> Boulders = new ArrayList<>();
@@ -98,30 +98,23 @@ public class QLearning {
             max = grid.getGrid()[row][col].getEast();
         }
 
-        if(grid.isValidCell(row-1,col) && max < grid.getGrid()[row][col].getNorth()&& !grid.isBoulder(row-1,col) )
-        {
+        if(grid.isValidCell(row-1,col) && max < grid.getGrid()[row][col].getNorth()&& !grid.isBoulder(row-1,col) ) {
             newRow = row-1;
             newCol = col;
             max = grid.getGrid()[row][col].getNorth();
-
         }
 
-        if(grid.isValidCell(row,col+1) && max < grid.getGrid()[row][col].getWest()&& !grid.isBoulder(row,col+1) )
-        {
+        if(grid.isValidCell(row,col+1) && max < grid.getGrid()[row][col].getWest()&& !grid.isBoulder(row,col+1) ) {
             newCol = col + 1;
             newRow = row;
             max = grid.getGrid()[row][col].getWest();
         }
 
-        if(grid.isValidCell( row+1, col) && max < grid.getGrid()[row][col].getSouth()&& !grid.isBoulder(row+1,col) )
-        {
+        if(grid.isValidCell( row+1, col) && max < grid.getGrid()[row][col].getSouth()&& !grid.isBoulder(row+1,col) ) {
             newRow = row +1;
             newCol = col;
-
             max = grid.getGrid()[row][col].getSouth();
-
         }
-
 
         return new int[]{newRow,newCol};
     }
@@ -316,18 +309,18 @@ public class QLearning {
     public static void processLine(String line){
 
         if(line.charAt(0) == 'H'){
-            horizontal = (int)extractNumber(line);;  ;
+            horizontal = (int)extractNumber(line);
         }
         else if(line.charAt(0) == 'T'){
             if(line.charAt(1) == 'r'){
-                TransitionCost =extractNumber(line);; ;
+                TransitionCost =extractNumber(line);
             } else if (line.charAt(1) == 'e') {
                 Terminals = createExitStates(processTerminal(line));
             }
 
         }
         else if(line.charAt(0) == 'V'){
-            vertical = (int)extractNumber(line);;  ;
+            vertical = (int)extractNumber(line);
         }
         else if(line.charAt(0) == 'B'){
             Boulders = createBoulders(processCoordinates(processBoulder(line)));
@@ -340,17 +333,17 @@ public class QLearning {
             K = (int)extractNumber(line);
         }
         else if(line.charAt(0) == 'E'){
-            Episodes  = (int) extractNumber(line);;  ;
+            Episodes  = (int) extractNumber(line);
         }
         else if(line.charAt(0) == 'D'){
-            Discount = extractNumber(line);;  ;
+            Discount = extractNumber(line);
         }
         else if(line.charAt(0) == 'N'){
-            Noise = extractNumber(line);;  ;
+            Noise = extractNumber(line);
 
         }
         else if(line.charAt(0) == 'a'){
-            alpha  = extractNumber(line);;  ;
+            alpha  = extractNumber(line);
         }
     }
 
@@ -389,16 +382,15 @@ public class QLearning {
         ArrayList<Boulder> boulders = new ArrayList<>();
         Boulder B;
         int eROw =0, eCOl = 0;
-        for (int i = 0; i < T.size(); i++) {
+        for (int[] ints : T) {
             for (int j = 0; j < 2; j++) {
-                if(j == 0){
-                    eROw = T.get(i)[j];
-                }
-                else {
-                    eCOl = T.get(i)[j];
+                if (j == 0) {
+                    eROw = ints[j];
+                } else {
+                    eCOl = ints[j];
                 }
             }
-            B = new Boulder(eROw,eCOl);
+            B = new Boulder(eROw, eCOl);
             boulders.add(B);
         }
         return boulders;
@@ -479,7 +471,6 @@ public class QLearning {
         for(int i = 0; i< sentence.length(); i++){
             if(sentence.charAt(i)== '{'){
                 int [] who = new int[3];
-                i++;
                 String newSent = sentence.substring(sentence.indexOf('{')+1,sentence.indexOf('}'));
                 String [] toBeParsed = newSent.split(",");
                 for (int j = 0; j < who.length; j++) {
