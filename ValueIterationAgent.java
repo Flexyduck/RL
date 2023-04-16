@@ -21,29 +21,16 @@ public class ValueIterationAgent {
         readFile(fileName);
     }
 
-//    public static void main(String[] args) {
-//        readFile("gridConf.txt");
-//        Grid newGrid = createGrid();
-//        newGrid.printGrid();
-//       iterateOver(newGrid, K);
-//       createOptimalPolicy(newGrid);
-//       ValueIterGUI dis = new ValueIterGUI(newGrid);
-//    }
-
     public void iterateOver(Grid grid){
         ArrayList<State> newState = new ArrayList<>();
         int [] actions = {1,2,3,4};
         double [] qValues = new double[4];
         double [] values;
         int count = 0;
-        //System.out.println("\nk = " + count);
-        //grid.printGrid();
         while (count != K) {
             if(count == 0){
                 setGridTerminals(grid);
                 count++;
-                //System.out.println("\nk = " + count);
-                //grid.printGrid();
                 continue;
             }
             for (int i = 0; i < grid.getRow(); i++) {
@@ -69,8 +56,6 @@ public class ValueIterationAgent {
             }
             count++;
             updateGrid(newState, grid);
-            //System.out.println("\nk = " + count);
-            //grid.printGrid();
         }
     }
     public static void updateGrid(ArrayList<State> nothing, Grid grid){
@@ -82,6 +67,43 @@ public class ValueIterationAgent {
         double badProbAlt = (Noise)/2;
         double goodProb = 1-Noise;
         return (goodProb*(TransitionCost + (Discount*pos1)) + badProbAlt*(TransitionCost + (Discount*pos2)) + badProbAlt*(TransitionCost + (Discount*pos3)));
+    }
+    public String computeActionFromValues(State state){
+        Grid newGrid2 = createGrid();
+        iterateOver(newGrid2);
+        int bestAction = newGrid2.findDirectionToGo(state.getH(),state.getV());
+        String directionToGo = "";
+        if (bestAction == 1){
+            directionToGo = "Go East";
+        }
+        else if (bestAction == 2){
+            directionToGo = "Go North";
+        }
+        else if (bestAction == 3){
+            directionToGo = "Go West";
+        }
+        else if (bestAction == 4){
+            directionToGo = "Go South";
+        }
+        return directionToGo;
+    }
+    public double computeQValueFromValues(State state, int action){
+        Grid newGrid2 = createGrid();
+        iterateOver(newGrid2);
+        double qVal = 0;
+        if (action == 1){
+            qVal = newGrid2.getState(state.getH(),state.getV()).getEast();
+        }
+        else if (action == 2){
+            qVal = newGrid2.getState(state.getH(),state.getV()).getNorth();
+        }
+        else if (action == 3){
+            qVal = newGrid2.getState(state.getH(),state.getV()).getWest();
+        }
+        else if (action == 4){
+            qVal = newGrid2.getState(state.getH(),state.getV()).getSouth();
+        }
+        return qVal;
     }
     public void createOptimalPolicy(Grid grid){
         ArrayList<State> optimalPolicy = new ArrayList<>();
@@ -302,24 +324,10 @@ public class ValueIterationAgent {
         iterateOver(newGrid2);
         return newGrid2.getState(h,v).getCurrVal();
     }
-    public String returnBestPolicy(int h, int v, int k){
+    public String returnBestPolicy(int h, int v, int k) {
         Grid newGrid2 = createGrid();
-        String directionToGo = "";
         K = k;
         iterateOver(newGrid2);
-        int bestAction = newGrid2.findDirectionToGo(h,v);
-        if (bestAction == 1){
-            directionToGo = "Go East";
-        }
-        else if (bestAction == 2){
-            directionToGo = "Go North";
-        }
-        else if (bestAction == 3){
-            directionToGo = "Go West";
-        }
-        else if (bestAction == 4){
-            directionToGo = "Go South";
-        }
-        return directionToGo;
+        return computeActionFromValues(newGrid2.getState(h, v));
     }
 }

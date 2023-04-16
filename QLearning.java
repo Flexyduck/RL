@@ -28,27 +28,22 @@ public class QLearning {
     static double Noise;
 
 
-
-
-    public static void main(String[] args) throws IOException{
-        readFile("gridConf.txt");
-        Grid newGrid = createGrid();
-        newGrid.printGrid();
-        QLearning q = new QLearning();
-        q.train(0,0,newGrid);
-       QLearningGUI display = new QLearningGUI(newGrid);
-
+    public QLearning(String fileName){
+        readFile(fileName);
+        train(RobotStartState[0], RobotStartState[1]);
     }
-    public void train(int row, int col, Grid grid) {
-        setGridTerminals(grid);
-        grid.printGrid();
+    public static void train(int row, int col) {
+        Grid newGrid = createGrid();
+        setGridTerminals(newGrid);
+//        grid.printGrid();
         for (int i = 0; i < Episodes; i++) {
             System.out.println("Episode: "+i);
-            trainEpisode(row, col,grid);
-           grid.printGrid();
+            trainEpisode(row, col,newGrid);
+//           grid.printGrid();
         }
+        QLearningGUI display = new QLearningGUI(newGrid);
     }
-    public int[] getNextState(int row, int col, int action, Grid grid) {
+    public static int[] getNextState(int row, int col, int action, Grid grid) {
         // Get the next state (row, col) given the current state and action
         int newRow = row, newCol = col;
         switch (action) {
@@ -67,7 +62,7 @@ public class QLearning {
         }
         return new int[] {newRow, newCol};
     }
-    public int[] getNextValidCell(int row, int col, Grid grid) {
+    public static int[] getNextValidCell(int row, int col, Grid grid) {
         int newRow = row;
         int newCol = col;
 
@@ -105,7 +100,7 @@ public class QLearning {
 
         return new int[]{newRow,newCol};
     }
-    private void trainEpisode(int startRow, int startCol, Grid grid) {
+    private static void trainEpisode(int startRow, int startCol, Grid grid) {
         int currentRow = startRow;
         int currentCol = startCol;
         int[] newState;
@@ -180,15 +175,19 @@ public class QLearning {
         }
         return boulders;
     }
-    public static void readFile(String filePath) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(filePath));
-        String line;
+    public static void readFile(String filePath){
+        try{
+            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+            String line;
 
-        while ((line = reader.readLine()) != null) {
-            processLine(line);
+            while ((line = reader.readLine()) != null) {
+                processLine(line);
+            }
+
+            reader.close();
+        } catch(Exception e) {
+            e.getStackTrace();
         }
-
-        reader.close();
     }
     public static void processLine(String line){
 

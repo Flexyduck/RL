@@ -1,13 +1,8 @@
-import java.util.Queue;
-
 public class State {
 
-    private int h,v;
+    private final int h,v;
     private double currVal;
-    private int[] possibleActions;
     private int actionTaken;
-
-
     public boolean isTerminal;
     private double north, south, east, west;
 
@@ -17,7 +12,6 @@ public class State {
         this.h = h;
         this.v = v;
         currVal = 0.0;
-        possibleActions = new int[3];
         actionTaken = 0;
         isTerminal = false;
     }
@@ -25,7 +19,6 @@ public class State {
         this.h = h;
         this.v = v;
         this. currVal = currVal;
-        possibleActions = new int[3];
         actionTaken = 0;
     }
 
@@ -64,15 +57,6 @@ public class State {
     public int getH() {
         return h;
     }
-
-
-    public boolean isTerminal() {
-        return isTerminal;
-    }
-
-    public void setTerminal(boolean terminal) {
-        isTerminal = terminal;
-    }
     public int getActionTaken() {
         return actionTaken;
     }
@@ -89,34 +73,22 @@ public class State {
     public void setCurrVal(double currVal) {
         this.currVal = currVal;
     }
+    public void  setMaxQ() {
+        double max = getEast();
+        if (max < getNorth()) {
+            max = getNorth();
 
+        }
+        if (max < getWest()) {
+            max = getWest();
 
-
-public void  setMaxQ()
-{
-
-    double max = getEast();
-    if( max < getNorth()) {
-        max = getNorth();
-
+        }
+        if (max < getSouth()) {
+            max = getSouth();
+        }
+        setCurrVal(max);
     }
-     if( max < getWest()) {
-        max = getWest();
-
-    }
-     if (max < getSouth()) {
-        max = getSouth();
-    }
-
-
-    setCurrVal(max);
-
-}
-
-
-
-    public void setAllAction(int action, double val)
-    {
+    public void setAllAction(int action, double val) {
         if( action == 1)
             setEast(val);
         else if ( action == 2)

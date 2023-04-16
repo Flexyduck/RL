@@ -1,9 +1,8 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
-
 public class Main {
     static ValueIterationAgent VA = new ValueIterationAgent("gridConf.txt");
+    static QLearning QL = new QLearning("gridConf.txt");
     static int h;
     static int v;
     static int step;
@@ -11,6 +10,7 @@ public class Main {
     static String query;
     public static void main(String[] args) {
         readResultFile("result.txt");
+        //System.out.println(VA.computeQValueFromValues(new State(0,0),2));
     }
     public static void readResultFile(String fileName){
         try{
@@ -42,9 +42,9 @@ public class Main {
             }
         } else if (method.equals("RL")) {
             if(query.equals("bestQValue")){
-                System.out.println("Do a RL");
+//                System.out.println(line + ": " + QL.returnStateValue(h,v,step));
             } else if (query.equals("bestPolicy")) {
-                System.out.println("Do a RL2");
+//                System.out.println(line + ": " + QL.returnBestPolicy(h,v,step));
             }
         }
     }
