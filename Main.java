@@ -58,5 +58,7 @@ public class Main {
                 System.out.println(line + ": " + QL.returnBestPolicy(h,v,step));
             }
         }
+
+
     }
 }

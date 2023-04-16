@@ -65,7 +65,11 @@ public class ValueIterationAgent {
             count++;
             updateGrid(newState, grid);
         }
+
+
     }
+
+
     public static void updateGrid(ArrayList<State> nothing, Grid grid){
         for (State state : nothing) {
             grid.getState(state.getH(), state.getV()).setCurrVal(state.getCurrVal());
@@ -330,12 +334,14 @@ public class ValueIterationAgent {
         Grid newGrid2 = createGrid();
         K = k;
         iterateOver(newGrid2);
+
         return newGrid2.getState(h,v).getCurrVal();
     }
     public String returnBestPolicy(int h, int v, int k) {
         Grid newGrid2 = createGrid();
         K = k;
         iterateOver(newGrid2);
+        ValueIterGUI valueIterGUI = new ValueIterGUI(newGrid2);
         return computeActionFromValues(newGrid2.getState(h, v));
     }
 }

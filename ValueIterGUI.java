@@ -79,9 +79,9 @@ public class ValueIterGUI extends JFrame {
                     }
                 }
             g.setColor(Color.white);
-            g.setFont(new Font("Arial", Font.BOLD, 20 ));
-            String t  = "Values After " + grid.getK() + " iterations.";
-            g.drawString(t, width/6,getHeight() - getHeight()/6);
+//            g.setFont(new Font("Arial", Font.BOLD, 20 ));
+//            String t  = "Values After " + grid.getK() + " iterations.";
+//            g.drawString(t, width/6,getHeight() - getHeight()/6);
 
         }
 

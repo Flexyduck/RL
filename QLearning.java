@@ -36,7 +36,7 @@ public class QLearning {
         }
         s = Terminals.get(0).getCurrVal();
 //        getPolicy(newGrid);
-        QLearningGUI display = new QLearningGUI(newGrid, s );
+
         return newGrid;
     }
     public static int[] getNextState(int row, int col, int action, Grid grid) {
@@ -375,6 +375,7 @@ public class QLearning {
     public String returnBestPolicy(int h, int v, int k) {
         Episodes = k;
         Grid newGrid2 = train(RobotStartState[0],RobotStartState[1]);
+        QLearningGUI display = new QLearningGUI(newGrid2, s );
         return getDirection(newGrid2.getState(h, v), newGrid2);
     }
 
