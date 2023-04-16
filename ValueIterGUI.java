@@ -15,13 +15,8 @@ public class ValueIterGUI extends JFrame {
         setSize(400, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.grid = grid;
-        // if this prints the q values
-//        add(new GridQ());
-//        setVisible(true);
         add(new GridPanel());
         setVisible(true);
-
-
     }
 
 
@@ -132,8 +127,7 @@ public class ValueIterGUI extends JFrame {
         }
     }
 
-    public void printQValues(Graphics g, int width, int height, int i ,int j, int x, int y)
-    {
+    public void printQValues(Graphics g, int width, int height, int i ,int j, int x, int y) {
         g.setColor(Color.white);
         g.setFont(new Font("Arial", Font.BOLD, 10));
 

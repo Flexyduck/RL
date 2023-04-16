@@ -1,9 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 import static java.lang.String.valueOf;
 
@@ -13,14 +10,9 @@ public class QLearning {
     static ArrayList<ExitState> Terminals = new ArrayList<>();
     static ArrayList<Boulder> Boulders = new ArrayList<>();
     static int[] RobotStartState = new int[2];
-
     private static  double alpha;
-
-
     static int horizontal;
     static int vertical;
-
-
     static int K;
     static int Episodes;
     static double Discount;
@@ -32,16 +24,18 @@ public class QLearning {
         readFile(fileName);
         train(RobotStartState[0], RobotStartState[1]);
     }
-    public static void train(int row, int col) {
+    public static Grid train(int row, int col) {
         Grid newGrid = createGrid();
         setGridTerminals(newGrid);
 //        grid.printGrid();
         for (int i = 0; i < Episodes; i++) {
-            System.out.println("Episode: "+i);
+           // System.out.println("Episode: "+i);
             trainEpisode(row, col,newGrid);
 //           grid.printGrid();
         }
+//        getPolicy(newGrid);
         QLearningGUI display = new QLearningGUI(newGrid);
+        return newGrid;
     }
     public static int[] getNextState(int row, int col, int action, Grid grid) {
         // Get the next state (row, col) given the current state and action
@@ -123,8 +117,62 @@ public class QLearning {
 
         }
     }
-
-
+    public static void update(int r, int c, double result, Grid grid){
+        grid.getGrid()[r][c].setMaxQ();
+        grid.getGrid()[r][c].setCurrVal(result);
+    }
+    public static double getQValue(State state, int action, Grid newGrid2){
+        double qVal = 0;
+        if (action == 1){
+            qVal = newGrid2.getState(state.getH(),state.getV()).getEast();
+        }
+        else if (action == 2){
+            qVal = newGrid2.getState(state.getH(),state.getV()).getNorth();
+        }
+        else if (action == 3){
+            qVal = newGrid2.getState(state.getH(),state.getV()).getWest();
+        }
+        else if (action == 4){
+            qVal = newGrid2.getState(state.getH(),state.getV()).getSouth();
+        }
+        return qVal;
+    }
+    public static double getValue(State state, Grid newGrid2){
+        return newGrid2.getState(state.getH(),state.getV()).getCurrVal();
+    }
+    public static void getPolicy(Grid grid){
+        ArrayList<State> optimalPolicy = new ArrayList<>();
+        State robot = grid.getState(RobotStartState[0], RobotStartState[1]);
+        optimalPolicy.add(robot);
+        while(!grid.isTerminal(robot.getH(),robot.getV())){
+            robot = grid.optimalPolicy(robot);
+            optimalPolicy.add(robot);
+        }
+        for (int i = 0; i < optimalPolicy.size(); i++) {
+            if (i == optimalPolicy.size()-1) {
+                System.out.print(optimalPolicy.get(i));
+                break;
+            }
+            System.out.print(optimalPolicy.get(i) + "->");
+        }
+    }
+    public static String getDirection(State state, Grid newGrid2){
+        int bestAction = newGrid2.findDirectionToGo(state.getH(),state.getV());
+        String directionToGo = "";
+        if (bestAction == 1){
+            directionToGo = "Go East";
+        }
+        else if (bestAction == 2){
+            directionToGo = "Go North";
+        }
+        else if (bestAction == 3){
+            directionToGo = "Go West";
+        }
+        else if (bestAction == 4){
+            directionToGo = "Go South";
+        }
+        return directionToGo;
+    }
     public static Grid createGrid(){
         Grid newGrid = new Grid(vertical, horizontal);
         newGrid.initialize();
@@ -316,7 +364,17 @@ public class QLearning {
         }
         return hm;
     }
-
+    public double returnStateValue(int h, int v, int k){
+        Grid newGrid2 = createGrid();
+        Episodes = k;
+        train(RobotStartState[0],RobotStartState[1]);
+        return getValue(newGrid2.getState(h,v), newGrid2);
+    }
+    public String returnBestPolicy(int h, int v, int k) {
+        Episodes = k;
+        Grid newGrid2 = train(RobotStartState[0],RobotStartState[1]);
+        return getDirection(newGrid2.getState(h, v), newGrid2);
+    }
 
 
 }

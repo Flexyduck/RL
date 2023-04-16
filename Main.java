@@ -10,8 +10,13 @@ public class Main {
     static String query;
     public static void main(String[] args) {
         readResultFile("result.txt");
-        //System.out.println(VA.computeQValueFromValues(new State(0,0),2));
     }
+
+    /**
+     * This function reads the results.txt file and does the appropriate action per line
+     *
+     * @param fileName the name of the file to be read
+     */
     public static void readResultFile(String fileName){
         try{
             BufferedReader reader = new BufferedReader(new FileReader(fileName));
@@ -26,6 +31,12 @@ public class Main {
             e.getStackTrace();
         }
     }
+
+    /**
+     * This function processes each line in the file
+     *
+     * @param line the line in the file to be processed
+     */
     public static void processLine(String line){
         String [] contents = line.split(",");
         h = Integer.parseInt(contents[0]);
@@ -42,9 +53,9 @@ public class Main {
             }
         } else if (method.equals("RL")) {
             if(query.equals("bestQValue")){
-//                System.out.println(line + ": " + QL.returnStateValue(h,v,step));
+                System.out.println(line + ": " + QL.returnStateValue(h,v,step));
             } else if (query.equals("bestPolicy")) {
-//                System.out.println(line + ": " + QL.returnBestPolicy(h,v,step));
+                System.out.println(line + ": " + QL.returnBestPolicy(h,v,step));
             }
         }
     }

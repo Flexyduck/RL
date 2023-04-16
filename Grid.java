@@ -7,14 +7,13 @@ public class Grid {
     private final int row;
     private final int col;
 
-    private int k;
+    private final int k;
     public Grid(int vertical, int horizontal) {
         row = vertical;
         col = horizontal;
         grid = new State [row][col];
          k= 0;
     }
-
     public void initialize(){
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
@@ -22,19 +21,12 @@ public class Grid {
             }
         }
     }
-
     public int getK() {
         return k;
     }
-
-    public void setK(int k) {
-        this.k = k;
-    }
-
     public State[][] getGrid() {
         return grid;
     }
-
     public void add(int row, int col, double val){
         State newState = new State(row, col);
         newState.setCurrVal(val);
@@ -90,23 +82,11 @@ public class Grid {
     public boolean isTerminal(int row, int col){
         return grid[row][col].getClass().equals(ExitState.class);
     }
-
     public int getRow() {
         return row;
     }
-
     public int getCol() {
         return col;
-    }
-
-    public double returnMax(double[] arr){
-        double maxVal = 0.0;
-
-        for (int i = 0; i < arr.length; i++) {
-            maxVal = Math.max(maxVal, arr[i]);
-        }
-
-        return maxVal;
     }
     public double getNorth(State s){
         double retState = s.getCurrVal();
@@ -136,7 +116,6 @@ public class Grid {
         }
         return retState;
     }
-
     public State optimalPolicy(State s){
         State nextState = new State(s.getH(),s.getV());
 
@@ -148,6 +127,10 @@ public class Grid {
             if(values[i] > max){
                 max = values[i];
                 bestWayToGo = i+1;
+            } else if (values[i] == max) {
+                double [] randm = {max, values[i]};
+                Random rand = new Random();
+                max = (rand.nextInt(randm.length));
             }
         }
         //east
@@ -255,9 +238,6 @@ public class Grid {
     public State getState(int row, int col) {
         return grid[row][col];
     }
-    public void setState(State state){
-        grid[state.getH()][state.getV()] = state;
-    }
     public void setTerminal(ExitState endState){
         grid[endState.getH()][endState.getV()] = endState;
     }
@@ -265,140 +245,4 @@ public class Grid {
         grid[boulder.getH()][boulder.getV()] = boulder;
     }
 
-    private int chooseAction(int x, int y, int[] actions) {
-        Random rand = new Random();
-        double[] qValues = getQValues(x, y, actions);
-        int[] maxActionIndices = getMaxActionIndices(qValues);
-        return maxActionIndices[rand.nextInt(maxActionIndices.length)];
-    }
-
-    private int[] getNextState(int x, int y, int action) {
-        int[] nextState = {x, y};
-        if (action == 1 && isValidCell(x, y - 1)) {
-            nextState[1] = y - 1;
-        } else if (action == 2 && isValidCell(x - 1, y)) {
-            nextState[0] = x - 1;
-        } else if (action == 3 && isValidCell(x + 1, y)) {
-            nextState[0] = x + 1;
-        } else if (action == 4 && isValidCell(x, y + 1)) {
-            nextState[1] = y + 1;
-        }
-        return nextState;
-    }
-
-    private double getReward(int x, int y, int action) {
-        // TODO: Implement reward function
-
-
-        return getActionVal(x,y,action);
-    }
-
-    private double getMaxQValue(int x, int y) {
-        double[] qValues = getQValues(x, y, null);
-        return returnMax(qValues);
-    }
-
-    private double getQValue(int x, int y, int action) {
-        // TODO: Implement Q-value retrieval
-        return 0;
-    }
-
-    private void setQValue(int x, int y, int action, double value) {
-        // TODO: Implement Q-value update
-    }
-
-    private double[] getQValues(int x, int y, int[] actions) {
-        // TODO: Implement Q-value retrieval
-        return null;
-    }
-
-    private int[] getMaxActionIndices(double[] values) {
-        List<Integer> maxIndices = new ArrayList<>();
-        double max = returnMax(values);
-        for (int i = 0; i < values.length; i++)
-        {
-            if (values[i] == max) {
-                maxIndices.add(i);
-            }
-        }
-        int[] maxIndicesArray = new int[maxIndices.size()];
-        for (int i = 0; i < maxIndices.size(); i++) {
-            maxIndicesArray[i] = maxIndices.get(i);
-        }
-        return maxIndicesArray;
-
-    }
-
-    private boolean hasConverged() {
-// TODO: Implement convergence checking
-        return false;
-    }
-
-    public double getActionVal( int x, int y, int action)
-    {
-        double result = 0;
-
-        //east
-        if(action == 1 && isValidCell(x,y-1))
-        {
-            result = grid[x][y-1].getCurrVal();
-        }
-        //north
-        else if(action == 2 && isValidCell(x-1,y))
-        {
-            result = grid[x-1][y].getCurrVal();
-        }
-        //west
-        else if(action == 3 && isValidCell(x,y+1))
-        {
-            result = grid[x][y+1].getCurrVal();
-        }
-        else if( action == 4 && isValidCell(x+1,y))
-        {
-            result = grid[x+1][y].getCurrVal();
-        }
-        return result;
-    }
-
-
-    public int getMaxAction(int row, int col)
-    {
-        grid[row][col].setMaxQ();
-        double max = 0;
-        int result = 0;
-        if(isValidCell(row,col-1) && grid[row][col-1].getCurrVal() != Double.NEGATIVE_INFINITY)
-        {
-
-            max = grid[row][col-1].getCurrVal();
-            result = 1;
-        }
-         if(isValidCell(row -1,col)&& grid[row-1][col].getCurrVal() != Double.NEGATIVE_INFINITY) {
-            if (max <= grid[row - 1][col].getNorth()){
-                max =  grid[row-1][col].getCurrVal();
-                result = 2;
-            }
-
-        }
-         if(isValidCell(row,col+1)&& grid[row][col+1].getCurrVal() != Double.NEGATIVE_INFINITY)
-        {
-            if(max <= grid[row][col+1].getCurrVal())
-            {
-
-                max =  grid[row][col+1].getCurrVal();
-                result = 3;
-
-            }
-        }
-
-         if(isValidCell(row+1,col)&& grid[row+1][col].getCurrVal() != Double.NEGATIVE_INFINITY)
-        {
-            if(max <=  grid[row+1][col].getCurrVal())
-            {
-                max = grid[row+1 ][col].getCurrVal();
-                result = 4;
-            }
-        }
-
-        return result;
-    }
 }

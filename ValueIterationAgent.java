@@ -5,6 +5,8 @@ import java.util.*;
 import static java.lang.String.valueOf;
 
 public class ValueIterationAgent {
+
+    //Instance variables from the file
     static int horizontal,vertical,K;
 
     static int Episodes;
@@ -17,10 +19,16 @@ public class ValueIterationAgent {
     static ArrayList<Boulder> Boulders = new ArrayList<>();
     static int[] RobotStartState = new int[2];
 
+    //Constructor
     public ValueIterationAgent(String fileName){
         readFile(fileName);
     }
 
+    /**
+     * This function performs the Value Iterating by iterating over the grid K times
+     *
+     * @param grid the grid to be iterated over
+     */
     public void iterateOver(Grid grid){
         ArrayList<State> newState = new ArrayList<>();
         int [] actions = {1,2,3,4};
