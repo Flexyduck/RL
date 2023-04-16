@@ -7,15 +7,16 @@ public class QLearningGUI extends JFrame{
 
 
     public Grid grid;
+    double reward;
 
-    public QLearningGUI( Grid grid)
-    {
+    public QLearningGUI( Grid grid, double reward) {
         setTitle("Q Learning with Episodes");
         setSize(500, 500);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.grid = grid;
         add(new GridQ());
         setVisible(true);
+        this.reward = reward;
 
     }
 
@@ -102,7 +103,7 @@ public class QLearningGUI extends JFrame{
         int nPoints = 3;
 
 
-        double rewardValue = 10;
+        double rewardValue = reward;
 
         int rows = grid.getRow();
         int cols = grid.getCol();

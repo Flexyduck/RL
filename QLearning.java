@@ -19,6 +19,7 @@ public class QLearning {
 
     static double Noise;
 
+    static double s;
 
     public QLearning(String fileName){
         readFile(fileName);
@@ -33,8 +34,9 @@ public class QLearning {
             trainEpisode(row, col,newGrid);
 //           grid.printGrid();
         }
+        s = Terminals.get(0).getCurrVal();
 //        getPolicy(newGrid);
-        QLearningGUI display = new QLearningGUI(newGrid);
+        QLearningGUI display = new QLearningGUI(newGrid, s );
         return newGrid;
     }
     public static int[] getNextState(int row, int col, int action, Grid grid) {
