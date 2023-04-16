@@ -43,12 +43,8 @@ public class ValueIterGUI extends JFrame {
 
                 for (int i = grid.getRow() - 1; i >= 0; i--) {
                     for (int j = 0; j < grid.getCol(); j++) {
-
-
                         int x = j * width / grid.getCol();
                         int y = i * height / grid.getRow();
-
-
                         if (grid.isTerminal(i,j)) {
 
                             if (grid.getGrid()[i][j].getCurrVal() > 0) {
@@ -97,8 +93,7 @@ public class ValueIterGUI extends JFrame {
 
     }
 
-    private class GridQ extends JPanel
-    {
+    private class GridQ extends JPanel{
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -110,19 +105,12 @@ public class ValueIterGUI extends JFrame {
             int width = getWidth();
             int height = getHeight()- getHeight()/4;
 
-
             for (int i = grid.getRow() - 1; i >= 0; i--) {
                 for (int j = 0; j < grid.getCol(); j++) {
-
-
                     int x = j * width / grid.getCol();
                     int y = i * height / grid.getRow();
-
-
                     if (grid.isTerminal(i,j)) {
-
                         if (grid.getGrid()[i][j].getCurrVal() > 0) {
-
                             g.setColor(Color.GREEN);
                         } else if (grid.getGrid()[i][j].getCurrVal() == Double.NEGATIVE_INFINITY) {
                             g.setColor(Color.GRAY);
@@ -130,27 +118,17 @@ public class ValueIterGUI extends JFrame {
                             g.setColor(Color.RED);
                         g.fillRect(x, y, width / grid.getCol(), height / grid.getRow());
                     } else {
-                    //    g.setColor(getGreenGradient(rewardValue, grid.getGrid()[i][j].getCurrVal()));
-                    //    g.fillRect(x, y, width / grid.getCol(), height / grid.getRow());
-                    //    System.out.println(i + " " + j + " action takes is " + grid.findHighestAdjacentValue(i, j));
-                       // drawArrow(g, x, y, width, height, grid.findHighestAdjacentValue(i,j));
                         printQValues(g,width,height,i,j,x,y);
 
                     }
-
-
-
                     g.setColor(Color.white);
                     g.drawRect(x, y, width / grid.getCol(), height / grid.getRow());
-
-
                 }
             }
             g.setColor(Color.white);
             g.setFont(new Font("Arial", Font.BOLD, 20 ));
             String t  = "Values After " + grid.getK() + " iterations.";
             g.drawString(t, width/6,getHeight() - getHeight()/6);
-
         }
     }
 
