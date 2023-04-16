@@ -27,7 +27,7 @@ public class ValueIterationAgent {
         newGrid.printGrid();
        iterateOver(newGrid, K);
        createOptimalPolicy(newGrid);
-       GridGUI dis = new GridGUI(newGrid);
+       ValueIterGUI dis = new ValueIterGUI(newGrid);
     }
 
     public static void iterateOver(Grid grid, int k){
@@ -107,34 +107,7 @@ public class ValueIterationAgent {
         }
         return maxVal;
     }
-//    public static double getNorth(State s, Grid grid){
-//        double retState = s.getCurrVal();
-//        if (isValidCell(s.getH()-1, s.getV(), grid) && !isBlockCell(s.getH()-1, s.getV(), grid)){
-//            retState = grid.getState(s.getH()-1, s.getV()).getCurrVal();
-//        }
-//        return retState;
-//    }
-//    public static double getSouth(State s, Grid grid){
-//        double retState = s.getCurrVal();
-//        if (isValidCell(s.getH()+1, s.getV(),grid) && !isBlockCell(s.getH()+1, s.getV(), grid)){
-//            retState = grid.getState(s.getH()+1,s.getV()).getCurrVal();
-//        }
-//        return retState;
-//    }
-//    public static double getEast(State s, Grid grid){
-//        double retState = s.getCurrVal();
-//        if (isValidCell(s.getH(), s.getV()+1, grid) && !isBlockCell(s.getH(), s.getV()+1, grid)){
-//            retState = grid.getState(s.getH(),s.getV()+1).getCurrVal();
-//        }
-//        return retState;
-//    }
-//    public static  double getWest(State s, Grid grid){
-//        double retState = s.getCurrVal();
-//        if (isValidCell(s.getH(), s.getV()-1, grid) && !isBlockCell(s.getH(), s.getV()-1, grid)){
-//            retState = grid.getState(s.getH(),s.getV()-1).getCurrVal();
-//        }
-//        return retState;
-//    }
+
     public static Grid createGrid(){
         Grid newGrid = new Grid(vertical, horizontal);
         newGrid.initialize();

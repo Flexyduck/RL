@@ -2,7 +2,7 @@ import java.awt.*;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class GridGUI extends JFrame {
+public class ValueIterGUI extends JFrame {
 
     public final int h = 3;
     public final int v = 4;
@@ -10,17 +10,18 @@ public class GridGUI extends JFrame {
     public Grid grid;
 
 
-    public GridGUI(Grid grid){
+    public ValueIterGUI(Grid grid){
         setTitle("Value Iteration Program");
         setSize(400, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.grid = grid;
+        // if this prints the q values
+//        add(new GridQ());
+//        setVisible(true);
         add(new GridPanel());
         setVisible(true);
 
-        //this prints the q values
-//        add(new GridQ());
-//        setVisible(true);
+
     }
 
 
@@ -53,15 +54,17 @@ public class GridGUI extends JFrame {
                             if (grid.getGrid()[i][j].getCurrVal() > 0) {
 
                                 g.setColor(Color.GREEN);
-                            } else if (grid.getGrid()[i][j].getCurrVal() == Double.NEGATIVE_INFINITY) {
-                                g.setColor(Color.GRAY);
-                            } else
+                            }
+                            else
                                 g.setColor(Color.RED);
                             g.fillRect(x, y, width / grid.getCol(), height / grid.getRow());
-                        } else {
+                        }
+                         else if (grid.getGrid()[i][j].getCurrVal() == Double.NEGATIVE_INFINITY) {
+                            g.setColor(Color.GRAY);
+                            g.fillRect(x, y, width / grid.getCol(), height / grid.getRow());
+                        }else {
                             g.setColor(getGreenGradient(rewardValue, grid.getGrid()[i][j].getCurrVal()));
                             g.fillRect(x, y, width / grid.getCol(), height / grid.getRow());
-                            System.out.println(i + " " + j + " action takes is " + grid.findHighestAdjacentValue(i, j));
                             drawArrow(g, x, y, width, height, grid.findHighestAdjacentValue(i,j));
 
                         }

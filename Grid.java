@@ -347,4 +347,46 @@ public class Grid {
         }
         return result;
     }
+
+
+    public int getMaxAction(int row, int col)
+    {
+        grid[row][col].setMaxQ();
+        double max = 0;
+        int result = 0;
+        if(isValidCell(row,col-1) && grid[row][col-1].getCurrVal() != Double.NEGATIVE_INFINITY)
+        {
+
+            max = grid[row][col-1].getCurrVal();
+            result = 1;
+        }
+         if(isValidCell(row -1,col)&& grid[row-1][col].getCurrVal() != Double.NEGATIVE_INFINITY) {
+            if (max <= grid[row - 1][col].getNorth()){
+                max =  grid[row-1][col].getCurrVal();
+                result = 2;
+            }
+
+        }
+         if(isValidCell(row,col+1)&& grid[row][col+1].getCurrVal() != Double.NEGATIVE_INFINITY)
+        {
+            if(max <= grid[row][col+1].getCurrVal())
+            {
+
+                max =  grid[row][col+1].getCurrVal();
+                result = 3;
+
+            }
+        }
+
+         if(isValidCell(row+1,col)&& grid[row+1][col].getCurrVal() != Double.NEGATIVE_INFINITY)
+        {
+            if(max <=  grid[row+1][col].getCurrVal())
+            {
+                max = grid[row+1 ][col].getCurrVal();
+                result = 4;
+            }
+        }
+
+        return result;
+    }
 }

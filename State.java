@@ -91,19 +91,41 @@ public class State {
     }
 
 
-public void setMaxQ()
+
+public void  setMaxQ()
 {
+
     double max = getEast();
-    if( max < getNorth())
+    if( max < getNorth()) {
         max = getNorth();
-    else if( max < getWest())
+
+    }
+     if( max < getWest()) {
         max = getWest();
-    else if (max < getSouth())
+
+    }
+     if (max < getSouth()) {
         max = getSouth();
+    }
+
 
     setCurrVal(max);
+
 }
 
+
+
+    public void setAllAction(int action, double val)
+    {
+        if( action == 1)
+            setEast(val);
+        else if ( action == 2)
+            setNorth(val);
+        else if( action == 3)
+            setWest(val);
+        else if (action == 4)
+            setSouth(val);
+    }
     @Override
     public String toString() {
         return ("{" + h + "," + v + "}" );

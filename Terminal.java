@@ -14,4 +14,6 @@ public class Terminal {
     {
         return terminalList.contains(new ExitState(h,v,reward));
     }
+
+
 }
