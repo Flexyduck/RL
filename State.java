@@ -6,8 +6,6 @@ public class State {
     public boolean isTerminal;
     private double north, south, east, west;
 
-
-
     public State(int h, int v) {
         this.h = h;
         this.v = v;

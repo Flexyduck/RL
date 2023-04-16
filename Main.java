@@ -1,5 +1,9 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+
+/**
+ * This code runs a value iteration and Q-Learning algorithm reading information from a file
+ */
 public class Main {
     static ValueIterationAgent VA = new ValueIterationAgent("gridConf.txt");
     static QLearning QL = new QLearning("gridConf.txt");

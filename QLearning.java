@@ -6,6 +6,7 @@ import static java.lang.String.valueOf;
 
 public class QLearning {
 
+    //instanc variables
     private static  double TransitionCost ;
     static ArrayList<ExitState> Terminals = new ArrayList<>();
     static ArrayList<Boulder> Boulders = new ArrayList<>();
@@ -21,10 +22,19 @@ public class QLearning {
 
     static double s;
 
+    //Constructor
     public QLearning(String fileName){
         readFile(fileName);
         train(RobotStartState[0], RobotStartState[1]);
     }
+
+    /**
+     * This trains a grid using Q Value Learning from a robot's starting position
+     *
+     * @param row the horizontal starting position of the robot
+     * @param col the vertical starting position of the robot
+     * @return the updated Grid
+     */
     public static Grid train(int row, int col) {
         Grid newGrid = createGrid();
         setGridTerminals(newGrid);
@@ -39,6 +49,16 @@ public class QLearning {
 
         return newGrid;
     }
+
+    /**
+     * This function finds the next state value for a robot from a given position
+     *
+     * @param row the horizontal starting position of the robot
+     * @param col the vertical starting position of the robot
+     * @param action the action taken by the robot
+     * @param grid the grid we wish to find the next state in
+     * @return the integer array coordinates of the next state
+     */
     public static int[] getNextState(int row, int col, int action, Grid grid) {
         // Get the next state (row, col) given the current state and action
         int newRow = row, newCol = col;
@@ -58,6 +78,15 @@ public class QLearning {
         }
         return new int[] {newRow, newCol};
     }
+
+    /**
+     * This function finds the next valid state for a robot from a given position
+     *
+     * @param row the horizontal starting position of the robot
+     * @param col the vertical starting position of the robot
+     * @param grid the grid we wish to find the next valid cell in
+     * @return the integer array coordinates of the next valid cell
+     */
     public static int[] getNextValidCell(int row, int col, Grid grid) {
         int newRow = row;
         int newCol = col;
@@ -96,6 +125,14 @@ public class QLearning {
 
         return new int[]{newRow,newCol};
     }
+
+    /**
+     * This function trains a robot over Episodes
+     *
+     * @param startRow the robot horizontal starting position
+     * @param startCol  the robot vertical starting position
+     * @param grid the grid we wish to train over
+     */
     private static void trainEpisode(int startRow, int startCol, Grid grid) {
         int currentRow = startRow;
         int currentCol = startCol;
@@ -119,10 +156,19 @@ public class QLearning {
 
         }
     }
+
     public static void update(int r, int c, double result, Grid grid){
         grid.getGrid()[r][c].setMaxQ();
         grid.getGrid()[r][c].setCurrVal(result);
     }
+    /**
+     * This function finds the Q value for a state that has taken a given action
+     *
+     * @param state this is the state from which we which to acquire Q values
+     * @param action the action taken from the state
+     * @param newGrid2 the Grid which we wish to find Q value of state from
+     * @return the Q-value
+     */
     public static double getQValue(State state, int action, Grid newGrid2){
         double qVal = 0;
         if (action == 1){
@@ -142,6 +188,13 @@ public class QLearning {
     public static double getValue(State state, Grid newGrid2){
         return newGrid2.getState(state.getH(),state.getV()).getCurrVal();
     }
+
+    /**
+     * This function calculates the optimal policy a robot should take to
+     * get to a reward state
+     *
+     * @param grid the grid from which we search the optimal policy from
+     */
     public static void getPolicy(Grid grid){
         ArrayList<State> optimalPolicy = new ArrayList<>();
         State robot = grid.getState(RobotStartState[0], RobotStartState[1]);
@@ -158,6 +211,14 @@ public class QLearning {
             System.out.print(optimalPolicy.get(i) + "->");
         }
     }
+
+    /**
+     * This function find the appropriate direction for a robot to go from given states
+     *
+     * @param state h the horizontal coordinate of the states
+     * @param newGrid2 v the vertical coordinate of the states
+     * @return a string indicating the best direction to go
+     */
     public static String getDirection(State state, Grid newGrid2){
         int bestAction = newGrid2.findDirectionToGo(state.getH(),state.getV());
         String directionToGo = "";
@@ -175,6 +236,39 @@ public class QLearning {
         }
         return directionToGo;
     }
+    /**
+     * This function finds the value of a state after K iterations of our algorithm
+     *
+     * @param h the horizontal coordinate of the states
+     * @param v the vertical coordinate of the states
+     * @param k the number of iterations to be found
+     * @return the value of the state after k iterations
+     */
+    public double returnStateValue(int h, int v, int k){
+        Grid newGrid2 = createGrid();
+        Episodes = k;
+        train(RobotStartState[0],RobotStartState[1]);
+        return getValue(newGrid2.getState(h,v), newGrid2);
+    }
+    /**
+     * This function find the appropriate position for a robot to go from given states
+     *
+     * @param h h the horizontal coordinate of the states
+     * @param v v the vertical coordinate of the states
+     * @param k k the number of iterations to be found
+     * @return a string indicating the best direction to go
+     */
+    public String returnBestPolicy(int h, int v, int k) {
+        Episodes = k;
+        Grid newGrid2 = train(RobotStartState[0],RobotStartState[1]);
+        QLearningGUI display = new QLearningGUI(newGrid2, s );
+        return getDirection(newGrid2.getState(h, v), newGrid2);
+    }
+
+    /**
+     * This creates and initializes a grid with 0 values and exit states
+     * @return the initialized grid
+     */
     public static Grid createGrid(){
         Grid newGrid = new Grid(vertical, horizontal);
         newGrid.initialize();
@@ -183,48 +277,22 @@ public class QLearning {
         }
         return newGrid;
     }
+
+    /**
+     * This sets the grid exit states
+     * @param newGrid the grid to be modified
+     */
     public static void setGridTerminals(Grid newGrid){
         for (ExitState terminal : Terminals) {
             newGrid.setTerminal(terminal);
         }
     }
-    public static ArrayList<ExitState> createExitStates(ArrayList<int[]> T){
-        ArrayList<ExitState> exit = new ArrayList<>();
-        ExitState E;
-        int eROw =0, eCOl = 0, eReward = 0;
-        for (int[] ints : T) {
-            for (int j = 0; j < 3; j++) {
-                if (j == 0) {
-                    eROw = ints[j];
-                } else if (j == 1) {
-                    eCOl = ints[j];
-                } else {
-                    eReward = ints[j];
-                }
-            }
-            E = new ExitState(eROw, eCOl, eReward);
-            exit.add(E);
-        }
-        return exit;
-    }
-    public static ArrayList<Boulder> createBoulders(ArrayList<int[]> T){
-        ArrayList<Boulder> boulders = new ArrayList<>();
-        Boulder B;
-        int eROw =0, eCOl = 0;
-        for (int i = 0; i < T.size(); i++) {
-            for (int j = 0; j < 2; j++) {
-                if(j == 0){
-                    eROw = T.get(i)[j];
-                }
-                else {
-                    eCOl = T.get(i)[j];
-                }
-            }
-            B = new Boulder(eROw,eCOl);
-            boulders.add(B);
-        }
-        return boulders;
-    }
+
+    /**
+     * This file reads a file and processes it line by line
+     *
+     * @param filePath the file to be read
+     */
     public static void readFile(String filePath){
         try{
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
@@ -239,6 +307,12 @@ public class QLearning {
             e.getStackTrace();
         }
     }
+
+    /**
+     * This processes each line of a file and assigns the appropriate variables the values
+     *
+     * @param line the line to be processed
+     */
     public static void processLine(String line){
 
         if(line.charAt(0) == 'H'){
@@ -279,6 +353,58 @@ public class QLearning {
             alpha  = extractNumber(line);;  ;
         }
     }
+
+    /**
+     * This function creates exitStates
+     *
+     * @param T This creates the ExitState objects from an array of integer co-ordinates
+     * @return The list of created ExitStates
+     */
+    public static ArrayList<ExitState> createExitStates(ArrayList<int[]> T){
+        ArrayList<ExitState> exit = new ArrayList<>();
+        ExitState E;
+        int eROw =0, eCOl = 0, eReward = 0;
+        for (int[] ints : T) {
+            for (int j = 0; j < 3; j++) {
+                if (j == 0) {
+                    eROw = ints[j];
+                } else if (j == 1) {
+                    eCOl = ints[j];
+                } else {
+                    eReward = ints[j];
+                }
+            }
+            E = new ExitState(eROw, eCOl, eReward);
+            exit.add(E);
+        }
+        return exit;
+    }
+    /**
+     * This function creates boulders
+     *
+     * @param T This creates the Boulder objects from an array of integer co-ordinates
+     * @return The list of created Boulders
+     */
+    public static ArrayList<Boulder> createBoulders(ArrayList<int[]> T){
+        ArrayList<Boulder> boulders = new ArrayList<>();
+        Boulder B;
+        int eROw =0, eCOl = 0;
+        for (int i = 0; i < T.size(); i++) {
+            for (int j = 0; j < 2; j++) {
+                if(j == 0){
+                    eROw = T.get(i)[j];
+                }
+                else {
+                    eCOl = T.get(i)[j];
+                }
+            }
+            B = new Boulder(eROw,eCOl);
+            boulders.add(B);
+        }
+        return boulders;
+    }
+
+    //Helper functions for file reading
     public static int loopTillEquals(String s){
         int equalsPos = 0;
         for (int i = 0; i < s.length(); i++) {
@@ -365,18 +491,6 @@ public class QLearning {
             }
         }
         return hm;
-    }
-    public double returnStateValue(int h, int v, int k){
-        Grid newGrid2 = createGrid();
-        Episodes = k;
-        train(RobotStartState[0],RobotStartState[1]);
-        return getValue(newGrid2.getState(h,v), newGrid2);
-    }
-    public String returnBestPolicy(int h, int v, int k) {
-        Episodes = k;
-        Grid newGrid2 = train(RobotStartState[0],RobotStartState[1]);
-        QLearningGUI display = new QLearningGUI(newGrid2, s );
-        return getDirection(newGrid2.getState(h, v), newGrid2);
     }
 
 
